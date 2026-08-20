@@ -155,7 +155,7 @@ Other models work; set them in **Settings → Model** or with `--model`.
 ### 1. Get the code
 
 ```powershell
-git clone https://github.com/<your-account>/mangatl.git
+git clone https://github.com/Kanee18/Manga-tl.git
 cd mangatl
 ```
 
