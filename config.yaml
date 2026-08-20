@@ -1,0 +1,296 @@
+# MangaTL — English to Indonesian manga translation.
+#
+# Paths are relative to the project root. Anything here can be overridden per
+# run from the GUI's settings panel; this file holds the defaults.
+
+models:
+  detector: assets/models/comictextdetector.onnx
+  # comic-text-and-bubble-detector, RT-DETR-v2 r50vd. Finds blocks of
+  # lettering and the balloons they sit in, which is what decides both which
+  # lines belong together and where a translation may be set.
+  layout: assets/models/comic_text_bubble_detector.onnx
+  # Baberu OCR: a DINOv2 encoder and a small decoder, trained on comic
+  # balloons. The directory holds the three graphs and the vocabulary.
+  ocr: assets/models/baberu
+  # LaMa fine-tuned on ~300k manga and anime pages. Same graph signature as
+  # stock big-lama (assets/models/lama_fp32.onnx, still there to compare
+  # against), and markedly better on the thing manga is made of: over dense
+  # diagonal hatching, stock LaMa leaves a soft grey haze where the lettering
+  # was and the strokes lose their edges, where this one carries them through.
+  inpaint: assets/models/lama_manga.onnx
+  # auto picks CUDA when onnxruntime exposes it, else CPU.
+  device: auto
+
+detect:
+  # The detector is exported at a fixed 1024x1024. Pages are letterboxed into
+  # it, so this is not a quality knob -- changing it breaks the graph.
+  input_size: 1024
+  # Probability floor on the segmentation head, used to build the erase mask.
+  mask_threshold: 0.30
+  # Two floors on the line head, applied as hysteresis -- see _lines_from_map.
+  # The strong floor decides where lines are and is what keeps two balloons
+  # standing side by side from fusing. The weak floor only adds components
+  # where the strong floor found nothing, so it can add a missed balloon but
+  # can never merge two found ones.
+  #
+  # Measured on the sample page: ordinary dialogue peaks at 0.999, while the
+  # small "LADY REIRIN!" balloon in the top-right panel peaks at 0.248 and
+  # needs about 0.12 to form a usable component. Running a single floor at
+  # 0.12 does find that balloon, and merges the two adjacent balloons in the
+  # middle-left panel while doing it.
+  line_threshold: 0.30
+  line_threshold_weak: 0.12
+  # Blocks smaller than this many pixels are texture, not lettering.
+  min_area: 260
+  # Two lines join into one block when the gap between them is under this
+  # multiple of the taller line's height. The line head marks the x-height
+  # core rather than the full ascender to descender extent, so these ratios
+  # read higher than the visible leading.
+  #
+  # Measured across two series: lines inside one balloon sit at 1.17-1.20 in
+  # the first and 1.60 in the second, which is more generously leaded. At 1.5
+  # the second series came apart mid-balloon -- "I-I GOT SWEPT IN AND" /
+  # "REPEATED IT" / "AFTER HER" were translated as three separate sentences.
+  # Two balloons are kept apart by the horizontal-overlap rule and by the
+  # absolute area cap, not by this number, so it can afford to be loose.
+  merge_gap_ratio: 2.2
+  # A gap inside one line wider than this multiple of the line's height is the
+  # gutter between two columns of text, not a space between two words, and the
+  # line is cut there before grouping. Measured on a page where two blocks sat
+  # side by side: word spaces reached 1.0x the line height, the narrowest real
+  # gutter was 1.375x. Without the cut those lines weld the two columns into
+  # one region and recognition reads across both, alternating a line from each
+  # -- "IT IF THE WOULD MAIDEN BE THE THAT IS PERFECT SUPPORTED".
+  gutter_ratio: 1.2
+  # A merged block may not exceed this fraction of the page. Grouping is
+  # transitive, so pairwise limits alone cannot bound the result.
+  max_block_area_ratio: 0.22
+  # Order balloons are handed to the translator in. Manga scanned without
+  # flipping keeps Japanese layout, so rtl is the default; scanlations that
+  # mirror the art for a Western release need ltr. Getting this wrong does not
+  # misplace any lettering -- it feeds the model its context out of order, and
+  # pronouns and register drift as a result.
+  reading_order: rtl
+
+  # -- layout model ---------------------------------------------------------
+  # Exported for a plain 640x640 resize, aspect and all -- the training images
+  # were resized rather than cropped, so this is not a quality knob.
+  layout_input: 640
+  # Confidence floors. Lettering is the thing a miss actually costs a page, so
+  # its floor sits lower than the balloons': a block found without its balloon
+  # is still translated, and falls back to the geometry the old path used. A
+  # balloon found around nothing costs a wrong drawable area, so it is asked
+  # to be more certain.
+  text_threshold: 0.45
+  bubble_threshold: 0.50
+  # The network is end-to-end, but the fine-tune emits near-duplicate balloons
+  # -- two boxes three pixels apart at 0.93 and 0.86 on the same balloon.
+  layout_nms_iou: 0.50
+
+  # Recover lettering that neither the line head nor the box head found.
+  #
+  # The line head is what tells set lettering from hand-drawn sound effects,
+  # and on some captions it is silent: measured on one page, a caption scored
+  # 0.066 while a sound effect on the same page scored 0.367, so no threshold
+  # on that head can recover the one without taking the other. What is left in
+  # the glyph mask is judged instead, against the lettering the detector did
+  # find on the same page -- relative, so it holds across page sizes.
+  #
+  #   stroke ratio  how heavy the strokes are against this page's dialogue.
+  #                 Captions are set at the dialogue's weight; sound effects
+  #                 are drawn two to five times heavier.
+  #   slant         how far the strokes lean off upright, in degrees. Set
+  #                 lettering stands up; brush-drawn effects lean.
+  #
+  # Measured over two chapters, on the 96 largest unclaimed blobs: these
+  # values keep 6 of the 8 genuinely missed captions and 1 of the 88 sound
+  # effects and artwork fragments -- and that one is a block of scanlation
+  # credits, which is text. Loosening the slant to 18 finds a seventh caption
+  # and starts admitting shouts drawn by hand.
+  #
+  # Nothing recovered here is erased on the strength of these numbers alone:
+  # recognition still has to read words out of it, and anything unreadable is
+  # skipped with its pixels intact.
+  recover_unclaimed: true
+  recover_max_stroke_ratio: 1.95
+  recover_max_slant: 14.0
+
+ocr:
+  # vision_fp16.onnx is the published model at 173MB. vision_int4.onnx is
+  # 52MB for about 0.002 more character error, if the download matters more
+  # than the last fraction of accuracy.
+  vision: vision_fp16.onnx
+  # The vocabulary is one entry per character, so this is a character budget
+  # rather than a word one. The longest balloon measured in one chapter came
+  # to 90 characters; the headroom costs nothing, since decoding stops at the
+  # end-of-text token and only a runaway ever reaches the cap.
+  max_chars: 384
+  # What the model was published with. The penalty pushes the decoder off a
+  # character it has already written, and the run cap stops it repeating one
+  # forever once it has lost the image.
+  repetition_penalty: 1.2
+  max_character_run: 12
+  # Air around the lettering in the crop handed to the recogniser, as a
+  # fraction of the block height. 224x224 is the whole input, so balloon
+  # around the text is resolution the glyphs do not get: framed on the
+  # balloon instead of the block, the longest lines came back cut off
+  # mid-word. A margin is still needed, or ascenders are clipped.
+  block_margin_ratio: 0.16
+  min_block_margin: 12
+  # A block is read whole where it can be, because the recogniser reads a
+  # whole sentence better than two halves of one -- split, one balloon gave
+  # "SUDERIOR" for "SUPERIOR" and "WEDE COME" for "WERE SOME". But 224x224 is
+  # the whole input, so a dense block arrives too small to read and the
+  # reading stops partway through, which costs the end of a sentence: "...AND
+  # IN THE SAME BREATH ACCEPT THEIR", without the "GIFT!". A block whose
+  # lettering lands under this is split at its line boundaries and joined back
+  # up. Measured over six pages: at 11 two readings of 46 still stopped short,
+  # at 13 none did, and 15 cost time without finding anything more.
+  min_line_pixels: 13.0
+  # A wide block is squeezed by its width, and taking lines off it never buys
+  # the resolution back -- the search walks down to one line a piece and asks
+  # for seven reads of one balloon.
+  max_read_pieces: 3
+  # Drop a region whose recognised text is shorter than this. Single stray
+  # characters are almost always detector noise.
+  min_chars: 2
+
+classify:
+  # Standard deviation of the ring sampled just outside the glyph mask. Below
+  # this the region sits on a flat fill and can be erased by filling; above it
+  # there is art underneath and inpainting is required.
+  flat_bg_std: 18.0
+  # A region whose glyphs are taller than this fraction of the page is display
+  # lettering -- a title or a sound effect, not dialogue.
+  # Sound effects are left as drawn by default; they are part of the art.
+  # Lettering over artwork is drawn with a stroke around it so it stays
+  # readable, and gets one back. The colour comes from the ring just outside
+  # the glyphs, which is the stroke; this is only the margin by which that
+  # colour must differ from the ink before a stroke is worth drawing at all.
+  #
+  # It is deliberately not a comparison against the artwork. That is what was
+  # here before, and a median cannot see texture: over screentone it read the
+  # artwork as near-white, found it close to a near-white stroke, and
+  # concluded there was no stroke. It missed 23 of 30 blocks over one chapter.
+  min_outline_contrast: 40.0
+
+translate:
+  # Which way the translation goes, as "<source>-<target>". One of:
+  #   en-id  English to Indonesian     ja-id  Japanese to Indonesian
+  #   ja-en  Japanese to English       zh-id  Chinese to Indonesian
+  #                                    zh-en  Chinese to English
+  # It decides the prompt, the repair guidance the model is given, what counts
+  # as a line that came back untranslated, and whether recognised lines are
+  # joined with a space. See src/mangatl/languages.py.
+  pair: en-id
+  host: http://localhost:11434
+  # gemma4:e2b -- 5.1B parameters at Q4_K_M, but only ~1.8GB of them resident,
+  # so it runs entirely on an 8GB card alongside the four ONNX sessions and
+  # still gives better Indonesian than the 7B models tried before it. Needs
+  # Ollama 0.20 or newer. See the README for what else was measured.
+  model: gemma4:e2b
+  # Low but not zero: greedy decoding makes the model repeat a bad phrasing
+  # across every balloon on a page.
+  temperature: 0.2
+  top_p: 0.9
+  # Fixed, so translating a chapter twice produces the same pages. Set to null
+  # to sample freshly each run -- useful only when you want to see a different
+  # phrasing for a balloon that came out badly.
+  seed: 0
+  num_ctx: 8192
+  # Generous: a 9B model that does not fit entirely in VRAM spills layers to
+  # the CPU, and a whole-page request can then take two or three minutes.
+  # Timing out does not cost a small delay, it throws away the one request
+  # that carried the page's context.
+  timeout: 600
+  max_retries: 3
+  # After the page batch and the corrective pass have both failed on a line,
+  # how many such lines are worth a request of their own. Each one now costs
+  # about a whole-page request, because each carries the whole page for
+  # context; a long tail of them took one page to 445 seconds.
+  max_single_retries: 3
+  # Translate a whole page in one call so pronouns and register stay
+  # consistent between balloons. Falls back to one call per region on failure.
+  page_batch: true
+  # Sound effects drawn into the artwork are left as drawn. The translator is
+  # asked to mark them, because whether a line is a noise or a line of speech
+  # is a question about the words: "CRACK" is one and "MOTHER..." is not, and
+  # no measurement of the box tells them apart -- measured over four pages the
+  # real sound effects came out smaller than the real captions.
+  #
+  # A line made entirely of known noises is settled before the model is asked,
+  # against the list in `mangatl.languages`. The flag is still the mechanism;
+  # the list is the floor under it, because a small model is reliably right
+  # about the loud noises and not about the quiet ones -- "SQUEEZE" lettered
+  # over a clasped hand came back as speech, and the drawing under it was
+  # erased for it. Add words there rather than here.
+  #
+  # A list only knows words it was given, and hand-drawn lettering is what OCR
+  # damages worst -- "GUUUURRRGLE" arrived as "GUUUURRAGIE AND". So a line
+  # drawn onto bare artwork also counts as a noise if it is *spelled* like
+  # one: three of the same letter in a row, which no English word has. Only
+  # off artwork, because a shout in a balloon stretches the same way.
+  #
+  # Set this to true to letter sound effects anyway.
+  translate_sfx: false
+  # Terms to keep verbatim or force a rendering for. Names go here.
+  glossary: {}
+
+inpaint:
+  # auto  -> flat fill where the background is uniform, LaMa where it is not
+  # lama  -> always LaMa
+  # fill  -> always flat fill (fast, wrong over art)
+  method: auto
+  # Grow the glyph mask before erasing so anti-aliased edges go too.
+  dilate: 5
+  # The square the crop is resized into. Both LaMa exports here are built at
+  # a fixed 512, and the graph is asked rather than this setting -- so raising
+  # it does nothing, where before it raised INVALID_ARGUMENT on the first
+  # region of the first page. It is used only by an export that leaves the
+  # axis free.
+  lama_size: 512
+  # Context around the region handed to LaMa, as a fraction of its size.
+  context_ratio: 0.35
+  # How far into a hole LaMa is asked to invent, in page pixels. Lettering
+  # over artwork is erased as a block rather than glyph by glyph, because the
+  # segmentation head only partly finds outlined and decorative lettering --
+  # but a block asks the model to invent every pixel inside it, working from
+  # the rim inward, and past about 150px in it stops inventing and returns
+  # smooth grey. A lattice window behind a caption came back blank that way.
+  # Deeper than this the block is abandoned and the glyphs are followed.
+  # Measured over 78 blocks in one chapter: above 150px the block destroyed
+  # the panel every time, below it the block was usually the better of the two.
+  max_hole_depth: 150.0
+
+typeset:
+  font: assets/fonts/AnimeAce2.ttf
+  font_bold: assets/fonts/AnimeAce2_Bold.ttf
+  font_italic: assets/fonts/AnimeAce2_Italic.ttf
+  # Manga lettering is set in caps; lowercase Indonesian in a balloon reads as
+  # a subtitle rather than dialogue.
+  uppercase: true
+  min_font_size: 8.0
+  max_font_size: 44.0
+  line_spacing: 1.15
+  # Inset from the balloon edge, as a fraction of the shorter side.
+  padding_ratio: 0.10
+  # Indonesian runs 20-30% longer than English. When a line still will not fit
+  # at the minimum size, break the word rather than overflow the balloon.
+  hyphenate: true
+  # Never set replacement lettering more than this much larger than the source
+  # lettering it replaces.
+  max_growth_over_source: 1.15
+  # Width of the stroke drawn around lettering that had one, as a fraction of
+  # the font size. Only applied where classification found a stroke, so
+  # balloon lettering is unaffected. The stroke is drawn under the fill, so
+  # the letterforms keep their weight and the halo sits entirely outside them.
+  outline_width_ratio: 0.20
+
+output:
+  # Written next to the chapter as "<chapter> <suffix>" unless the GUI is told
+  # otherwise.
+  suffix: _ID
+  format: png
+  jpeg_quality: 95
+  # Dump per-stage overlays under debug/<chapter>/ for inspection.
+  debug: false

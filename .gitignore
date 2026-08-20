@@ -1,0 +1,25 @@
+# Model weights -- ~880 MB, downloaded by step 3 of the README.
+assets/models/*.onnx
+assets/models/baberu/
+
+# Local choices, written by the settings panel.
+settings.local.yaml
+
+# Per-chapter page ticks, written by the app.
+page_selection.json
+
+# Stage overlays from --debug.
+debug/
+
+# Screenshots dropped in while reporting a bug.
+report_bug and error/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/

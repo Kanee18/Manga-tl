@@ -1,0 +1,55 @@
+[project]
+name = "mangatl"
+version = "1.0.0"
+description = "Offline English to Indonesian manga translation with typeset-quality output."
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "numpy>=1.26",
+    "opencv-python>=4.9",
+    "httpx>=0.27",                 # Ollama client
+    "skia-python>=87.5",           # C1 lettering; Pillow cannot place text this way
+    "onnxruntime-gpu>=1.17",       # A0-A4 detection, recognition and inpainting
+    "PyQt6>=6.6",
+    "psutil>=5.9",                 # the CPU and memory gauges
+    "nvidia-ml-py>=12.535",        # VRAM and board power, via NVML
+]
+
+[project.optional-dependencies]
+# Not imported by the pipeline, but onnxruntime-gpu on Windows loads
+# cublasLt64_12.dll and cudnn64_9.dll by name, and the CUDA-enabled torch
+# wheels are the easiest way to have them on disk. See mangatl.runtime.
+cuda = [
+    "torch>=2.3",
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+mangatl = "mangatl.cli:main"
+
+[project.gui-scripts]
+mangatl-gui = "mangatl.gui:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mangatl"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+# The default run excludes anything that loads a model or talks to Ollama, so
+# it stays fast enough to run on every change:
+#
+#   pytest            the fast suite
+#   pytest -m slow    only the tests that load models
+#   pytest -m ""      everything
+addopts = "-m 'not slow'"
+markers = [
+    "slow: loads an ONNX model or requires a running Ollama server",
+]
