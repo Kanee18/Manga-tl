@@ -1,0 +1,22 @@
+# MangaTL is freeware, not open source: this repository publishes only the
+# readme, the license, the credits and the pictures the readme shows. Every
+# other file -- the source, the tests, the models, settings and API keys --
+# stays on this computer.
+#
+# Written as a whitelist rather than a list of things to hide, so a file
+# added later is private until it is named here on purpose. To publish a
+# new picture, add a `!/docs/images/<name>` line below.
+
+/*
+!/.gitignore
+!/README.md
+!/LICENSE
+!/THIRD-PARTY-NOTICES.md
+
+!/docs/
+/docs/*
+!/docs/images/
+/docs/images/*
+!/docs/images/preview-app.png
+!/docs/images/before-after.png
+!/docs/images/logo.png
