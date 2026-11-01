@@ -5,233 +5,233 @@
 <h1 align="center">MangaTL</h1>
 
 <p align="center">
-  <b>Penerjemah manga otomatis untuk Windows: baca, hapus, terjemahkan, dan tulis ulang balon teks seperti hasil scanlation.</b><br>
-  Pilih folder chapter, tekan satu tombol, dan dapatkan halaman yang balonnya sudah berisi terjemahan dengan font komik, bukan sekadar subtitle yang ditempel di atas gambar.
+  <b>Automatic manga translation for Windows: it reads the balloons, erases the lettering, translates it and letters it back in, the way a scanlation team would.</b><br>
+  Pick a chapter folder, press one button, and get pages whose balloons hold the translation set in a comic font, not subtitles pasted over the artwork.
 </p>
 
 <p align="center">
   <a href="https://github.com/Kanee18/Manga-tl/releases/latest"><img alt="Download" src="https://img.shields.io/github/v/release/Kanee18/Manga-tl?label=download&color=ffd23f"></a>
   <img alt="Windows 10/11" src="https://img.shields.io/badge/Windows-10%20%7C%2011%20(64--bit)-5cc9f2">
-  <img alt="Offline" src="https://img.shields.io/badge/bisa-100%25%20offline-86dfac">
-  <img alt="Freeware" src="https://img.shields.io/badge/lisensi-freeware-ff82b2">
+  <img alt="Offline" src="https://img.shields.io/badge/runs-100%25%20offline-86dfac">
+  <img alt="Freeware" src="https://img.shields.io/badge/license-freeware-ff82b2">
 </p>
 
 <p align="center">
-  <img src="docs/images/preview-app.png" alt="Tampilan MangaTL" width="900">
+  <img src="docs/images/preview-app.png" alt="The MangaTL window" width="900">
 </p>
 
 ---
 
-## Daftar isi
+## Contents
 
-- [Apa itu MangaTL](#apa-itu-mangatl)
-- [Fitur](#fitur)
-- [Spesifikasi komputer](#spesifikasi-komputer)
-- [Download dan install](#download-dan-install)
-- [Pilih penerjemah: offline atau online](#pilih-penerjemah-offline-atau-online)
-- [Cara pakai](#cara-pakai)
-- [Privasi](#privasi)
-- [Kalau ada masalah](#kalau-ada-masalah)
-- [Update dan uninstall](#update-dan-uninstall)
-- [Melaporkan bug](#melaporkan-bug)
-- [Lisensi](#lisensi)
-- [Kredit](#kredit)
+- [What is MangaTL](#what-is-mangatl)
+- [Features](#features)
+- [System requirements](#system-requirements)
+- [Download and install](#download-and-install)
+- [Choose a translator: offline or online](#choose-a-translator-offline-or-online)
+- [How to use it](#how-to-use-it)
+- [Privacy](#privacy)
+- [Troubleshooting](#troubleshooting)
+- [Updating and uninstalling](#updating-and-uninstalling)
+- [Reporting a bug](#reporting-a-bug)
+- [License](#license)
+- [Credits](#credits)
 
 ---
 
-## Apa itu MangaTL
+## What is MangaTL
 
-MangaTL mengerjakan semua langkah yang biasanya dikerjakan tim scanlation, langsung di komputer Anda:
+MangaTL does every step a scanlation team usually does, right on your own computer:
 
-1. **Menemukan** setiap balon dan teks di halaman.
-2. **Membaca** teksnya (OCR), termasuk tulisan vertikal.
-3. **Menerjemahkan** satu halaman sekaligus, supaya percakapan antarbalon tetap nyambung.
-4. **Menghapus** teks asli. Balon polos diisi warna latarnya, teks di atas gambar direkonstruksi dengan AI inpainting.
-5. **Menulis ulang** terjemahannya dengan font komik, disesuaikan dengan bentuk dan ukuran balonnya.
+1. **Finds** every balloon and piece of lettering on the page.
+2. **Reads** it (OCR), vertical lettering included.
+3. **Translates** a whole page at once, so the conversation between balloons stays coherent.
+4. **Erases** the original. Plain balloons are filled with their own colour; lettering over artwork is rebuilt with AI inpainting.
+5. **Letters the translation back in** with a comic font, fitted to the shape and size of each balloon.
 
 <p align="center">
-  <img src="docs/images/before-after.png" alt="Sebelum dan sesudah diterjemahkan" width="900"><br>
-  <sub>Kiri: halaman asli. Kanan: hasil MangaTL (Inggris → Indonesia), tanpa diedit manual.</sub>
+  <img src="docs/images/before-after.png" alt="A page before and after translation" width="900"><br>
+  <sub>Left: the original page. Right: MangaTL's output (English → Indonesian), with no manual editing.</sub>
 </p>
 
 ---
 
-## Fitur
+## Features
 
-- **Satu klik untuk satu chapter.** Buka folder gambar atau arsip (`.cbz`, `.cbr`, `.zip`, `.rar`, `.7z`), centang halaman yang mau diterjemahkan, lalu jalankan.
-- **Bisa offline sepenuhnya** dengan model AI lokal lewat [Ollama](https://ollama.com), atau **online** lewat API: OpenAI, Anthropic Claude, Google Gemini, OpenRouter, Groq, DeepSeek, Mistral, atau server lain yang kompatibel dengan OpenAI.
-- **Efek suara dan tulisan di gambar dibiarkan**, begitu juga nomor halaman dan tulisan yang memang tidak perlu diterjemahkan.
-- **Bisa diedit langsung di aplikasi.** Ubah terjemahan, ukuran, posisi, atau tebal huruf per balon, hapus noda, lalu bandingkan dengan aslinya. Undo tersedia.
-- **Series sheet**: catat nama karakter, istilah, dan gaya bicara tiap karakter supaya terjemahan konsisten dari chapter ke chapter.
-- **Glosarium**: istilah yang harus selalu diterjemahkan dengan cara tertentu.
-- **Lanjutkan kapan saja**: halaman yang sudah diterjemahkan disimpan, jadi bisa dikoreksi lagi nanti.
-- **Export ke CBZ** untuk dibaca di aplikasi pembaca komik.
-- **Tur interaktif** saat pertama dibuka. Tekan **F1** kapan saja untuk melihatnya lagi.
-- **Tombol Report** untuk menyimpan semua data yang dibutuhkan saat melaporkan hasil terjemahan yang salah.
+- **One click per chapter.** Open a folder of images or an archive (`.cbz`, `.cbr`, `.zip`, `.rar`, `.7z`), tick the pages to translate, and run.
+- **Fully offline** with a local AI model through [Ollama](https://ollama.com), or **online** through an API: OpenAI, Anthropic Claude, Google Gemini, OpenRouter, Groq, DeepSeek, Mistral, or any other OpenAI-compatible server.
+- **Sound effects and lettering drawn into the art are left alone**, and so are page numbers and anything else that needs no translation.
+- **Edit right in the app.** Change the translation, size, position or weight of any balloon, brush away leftovers, and compare with the original. Undo is always there.
+- **Series sheet**: note character names, terms and each character's way of speaking, so the translation stays consistent from chapter to chapter.
+- **Glossary**: terms that must always be translated one particular way.
+- **Pick up where you left off**: translated pages are kept, so you can come back and correct them later.
+- **Export to CBZ** for your comic reader.
+- **Interactive tour** on first launch. Press **F1** any time to see it again.
+- **Report button** that saves everything needed to report a wrong translation.
 
-### Bahasa yang didukung
+### Supported languages
 
-| Dari \ Ke | Indonesia | Inggris |
+| From \ To | Indonesian | English |
 |---|:---:|:---:|
-| **Inggris** | ✅ (paling banyak dioptimalkan) | — |
-| **Jepang** | ✅ | ✅ |
-| **Mandarin** | ✅ | ✅ |
+| **English** | ✅ (most tuned) | — |
+| **Japanese** | ✅ | ✅ |
+| **Chinese** | ✅ | ✅ |
 
 ---
 
-## Spesifikasi komputer
+## System requirements
 
-| | Minimum | Rekomendasi |
+| | Minimum | Recommended |
 |---|---|---|
-| **Sistem operasi** | Windows 10 64-bit | Windows 11 64-bit |
-| **Prosesor** | 64-bit (x64) | Prosesor modern 64-bit |
-| **RAM** | 8 GB | 16 GB atau lebih |
-| **Kartu grafis** | Tidak wajib, bisa jalan di CPU | NVIDIA dengan **VRAM 8 GB** (seri GTX 16 / RTX ke atas) |
-| **Ruang disk** | ±3 GB (pakai penerjemah online) | ±11 GB (pakai penerjemah offline) |
-| **Internet** | Untuk download saja | Hanya kalau memakai penerjemah online |
+| **Operating system** | Windows 10 64-bit | Windows 11 64-bit |
+| **Processor** | 64-bit (x64) | A modern 64-bit processor |
+| **RAM** | 8 GB | 16 GB or more |
+| **Graphics card** | Not required; runs on the CPU | NVIDIA with **8 GB of VRAM** (GTX 16 series / RTX or newer) |
+| **Disk space** | ~3 GB (online translator) | ~11 GB (offline translator) |
+| **Internet** | Only to download | Only when using an online translator |
 
-**Rincian ruang disk:** installer berukuran ±1,3 GB dan terpasang jadi ±2,8 GB. Mode offline butuh tambahan ±7,2 GB untuk model bahasa `gemma4:e2b`.
+**Disk space in detail:** the installer is ~1.3 GB and unpacks to ~2.8 GB. Offline mode needs another ~7.2 GB for the `gemma4:e2b` language model.
 
-**Kecepatan** (diukur di RTX 3060 Ti 8 GB, RAM 24 GB, model `gemma4:e2b`):
+**Speed** (measured on an RTX 3060 Ti 8 GB, 24 GB RAM, `gemma4:e2b`):
 
 | | |
 |---|---|
-| Halaman pertama setiap kali aplikasi dibuka | ±2 menit (memuat semua model) |
-| Halaman berikutnya | **±30 detik** per halaman |
-| Satu chapter 32 halaman | ±20 menit, bisa ditinggal |
-| Pemakaian VRAM | ±3 GB |
+| First page each time the app starts | ~2 minutes (loading every model) |
+| Every page after that | **~30 seconds** a page |
+| A 32-page chapter | ~20 minutes, unattended |
+| VRAM used | ~3 GB |
 
-Tanpa kartu grafis NVIDIA, aplikasi tetap berjalan, tapi satu halaman bisa butuh beberapa menit.
-
----
-
-## Download dan install
-
-1. Buka halaman **[Releases](https://github.com/Kanee18/Manga-tl/releases/latest)**.
-2. Download **`MangaTL-Setup-1.0.0.exe`** (±1,3 GB).
-3. Jalankan file tersebut.
-   > Kalau muncul layar biru **"Windows protected your PC"**, klik **More info → Run anyway**. Peringatan ini muncul karena installer belum memiliki sertifikat digital berbayar, bukan karena ada virus.
-4. Ikuti wizard-nya. Tidak perlu hak admin. Aplikasi dipasang di `%LOCALAPPDATA%\Programs\MangaTL`.
-5. Biarkan pilihan **Create a desktop shortcut** tercentang kalau ingin ada ikon di Desktop.
-6. Selesai. MangaTL ada di **Start Menu** dan Desktop.
-
-Setelah itu, pilih penerjemahnya (langkah di bawah).
+Without an NVIDIA card the app still works, but a page can take several minutes.
 
 ---
 
-## Pilih penerjemah: offline atau online
+## Download and install
 
-MangaTL sendiri yang mendeteksi, membaca, menghapus, dan menulis teks. Bagian **menerjemahkan** dikerjakan model bahasa (AI), dan Anda bisa memilih salah satu dari dua cara ini.
+1. Go to the **[Releases](https://github.com/Kanee18/Manga-tl/releases/latest)** page.
+2. Download **`MangaTL-Setup-1.0.0.exe`** (~1.3 GB).
+3. Run it.
+   > If a blue **"Windows protected your PC"** screen appears, click **More info → Run anyway**. It appears because the installer is not signed with a paid code-signing certificate, not because anything is wrong with it.
+4. Follow the wizard. No administrator rights are needed; the app is installed in `%LOCALAPPDATA%\Programs\MangaTL`.
+5. Leave **Create a desktop shortcut** ticked if you want an icon on the desktop.
+6. Done. MangaTL is in the **Start menu** and on the desktop.
 
-### A. Offline dengan Ollama (gratis, privat)
+Then choose a translator (below).
 
-Cocok kalau Anda punya kartu grafis NVIDIA dan tidak ingin ada data yang keluar dari komputer.
+---
 
-1. Install **[Ollama](https://ollama.com/download)** (versi 0.20 atau lebih baru).
-2. Buka **Command Prompt**, lalu jalankan perintah ini (download ±7,2 GB, cukup sekali):
+## Choose a translator: offline or online
+
+MangaTL does the finding, reading, erasing and lettering itself. The **translating** is done by a language model (AI), and you can choose either of two ways to have one.
+
+### A. Offline with Ollama (free and private)
+
+For computers with an NVIDIA graphics card, when nothing should leave your machine.
+
+1. Install **[Ollama](https://ollama.com/download)** (version 0.20 or newer).
+2. Open **Command Prompt** and run this (a ~7.2 GB download, once):
    ```
    ollama pull gemma4:e2b
    ```
-3. Buka MangaTL. Penerjemah bawaannya sudah Ollama dengan model `gemma4:e2b`, jadi langsung bisa dipakai.
+3. Start MangaTL. Ollama with `gemma4:e2b` is the default translator, so it is ready to go.
 
-### B. Online lewat API (tanpa kartu grafis kuat)
+### B. Online through an API (no powerful graphics card needed)
 
-Cocok untuk laptop atau komputer tanpa GPU NVIDIA. Biasanya hasilnya juga lebih bagus, tapi **layanan API berbayar sesuai pemakaian** (beberapa punya kuota gratis).
+For laptops and computers without an NVIDIA GPU. The results are usually better too, but **API services charge for what you use** (some have a free tier).
 
-1. Buka **Settings** di MangaTL.
-2. Di **Translator**, pilih layanan, misalnya **Google Gemini**, **OpenAI**, atau **Anthropic Claude**.
-3. Klik link **Get a key from …** di bawah kolom API key, buat key di situs layanan tersebut, lalu tempel di kolom **API key**.
-4. Tekan **Refresh** untuk memuat daftar model, pilih modelnya, lalu klik **OK**.
+1. Open **Settings** in MangaTL.
+2. Under **Translator**, pick a service, such as **Google Gemini**, **OpenAI** or **Anthropic Claude**.
+3. Click the **Get a key from …** link under the API key field, create a key on that service's site, and paste it into **API key**.
+4. Press **Refresh** to list the models, pick one, and click **OK**.
 
-Setiap layanan mengingat key dan modelnya sendiri, jadi Anda bisa berpindah layanan kapan saja.
-
----
-
-## Cara pakai
-
-1. **Siapkan chapter** dalam satu folder berisi gambar halaman (`001.jpg`, `002.jpg`, …), atau satu file arsip `.cbz` / `.zip` / `.rar` / `.7z`.
-2. Klik **Open Chapter** (`Ctrl+O`) atau **Open Archive**. Folder juga bisa langsung di-drag ke jendela aplikasi.
-3. **Hilangkan centang** pada halaman yang tidak perlu diterjemahkan, seperti cover, halaman kredit, atau halaman yang isinya gambar saja.
-4. Coba dulu satu halaman dengan **Translate Page** (`Ctrl+T`).
-5. Periksa hasilnya. **Compare with original** memperlihatkan halaman sebelum dan sesudah. Tab **Lines** menampilkan teks asli dan terjemahannya.
-6. Kalau sudah sesuai, klik **Translate Chapter** (`Ctrl+Shift+T`).
-7. Ada balon yang kurang pas? Klik balonnya, ubah teks atau ukurannya di panel kanan, lalu **Save page**.
-
-Hasil disimpan di sebelah folder chapter Anda, dalam folder berakhiran **`_ID`**. Klik **Export CBZ** untuk menjadikannya satu file komik.
-
-> **Tips:** atur **Reading order** di Settings sebelum menerjemahkan satu chapter. Manga yang belum di-mirror memakai `rtl` (kanan ke kiri, bawaannya), sedangkan komik barat atau yang sudah di-mirror memakai `ltr`. Kalau urutannya salah, konteks percakapan bisa kacau.
+Each service remembers its own key and model, so you can switch between them any time.
 
 ---
 
-## Privasi
+## How to use it
 
-- **Mode offline (Ollama):** tidak ada gambar, teks, atau data apa pun yang dikirim ke internet. Semuanya diproses di komputer Anda.
-- **Mode online (API):** yang dikirim **hanya teks di dalam balon** (beserta catatan series dan glosarium). **Gambar halaman tidak pernah dikirim.** Teks tersebut diproses oleh layanan yang Anda pilih, sesuai kebijakan privasi masing-masing layanan.
-- **API key** disimpan di komputer Anda sendiri (`%LOCALAPPDATA%\MangaTL\api_keys.json`) dan tidak pernah ikut di laporan bug.
-- MangaTL tidak memerlukan akun, tidak ada iklan, dan tidak ada pelacakan.
+1. **Put a chapter in one folder** of page images (`001.jpg`, `002.jpg`, …), or use a single `.cbz` / `.zip` / `.rar` / `.7z` archive.
+2. Click **Open Chapter** (`Ctrl+O`) or **Open Archive**. You can also drag the folder onto the window.
+3. **Untick the pages** that need no translation: covers, credit pages, pages that are all artwork.
+4. Try one page first with **Translate Page** (`Ctrl+T`).
+5. Check the result. **Compare with original** shows the page before and after; the **Lines** tab lists the original text and its translation.
+6. Happy with it? Click **Translate Chapter** (`Ctrl+Shift+T`).
+7. A balloon not quite right? Click it, change its text or size in the right-hand panel, and press **Save page**.
+
+The results are saved next to your chapter, in a folder ending in **`_ID`**. Click **Export CBZ** to turn them into a single comic file.
+
+> **Tip:** set the **Reading order** in Settings before translating a chapter. Unflipped manga reads `rtl` (right to left, the default); western comics and flipped releases read `ltr`. With the wrong order, the context of the conversation gets mixed up.
 
 ---
 
-## Kalau ada masalah
+## Privacy
 
-| Masalah | Solusi |
+- **Offline mode (Ollama):** no image, text or data of any kind is sent over the internet. Everything is processed on your computer.
+- **Online mode (API):** **only the text inside the balloons** is sent (along with your series notes and glossary). **Page images are never sent.** That text is processed by the service you chose, under its own privacy policy.
+- **API keys** are stored on your own computer (`%LOCALAPPDATA%\MangaTL\api_keys.json`) and are never included in a bug report.
+- MangaTL needs no account, and has no ads and no tracking.
+
+---
+
+## Troubleshooting
+
+| Problem | Solution |
 |---|---|
-| Muncul **"Windows protected your PC"** saat install | Klik **More info → Run anyway**. |
-| Aplikasi tidak mau terbuka | Buka `%LOCALAPPDATA%\MangaTL\startup-error.log` (tempel alamat itu di Explorer) dan kirimkan isinya saat melapor. |
-| Status **translator: NOT READY** | **Mode offline:** Ollama belum berjalan atau model belum di-download. Jalankan `ollama pull gemma4:e2b`, atau buka aplikasi Ollama. **Mode online:** periksa API key dan koneksi internet. |
-| Satu halaman butuh beberapa menit | Model tidak muat di VRAM. Jalankan `ollama ps` di Command Prompt: kolom PROCESSOR harus `100% GPU`. Tutup aplikasi lain yang memakai GPU, atau pakai penerjemah online. |
-| Tidak yakin bagian mana yang bermasalah | Jalankan **self-test**: buka Command Prompt, lalu `"%LOCALAPPDATA%\Programs\MangaTL\MangaTL.exe" --selftest`. Aplikasi memeriksa 6 hal penting dan menandai yang gagal. |
-| Satu balon masih berbahasa asli | Lihat statusnya di tab **Lines**. `skipped_sfx` artinya efek suara yang sengaja dibiarkan. `failed_fit` artinya terjemahannya tidak muat; ketik ulang yang lebih pendek di panel kanan. |
-| Nama karakter berubah-ubah antarhalaman | Tambahkan namanya di **Series** atau **Glossary**. |
+| **"Windows protected your PC"** when installing | Click **More info → Run anyway**. |
+| The app does not open | Open `%LOCALAPPDATA%\MangaTL\startup-error.log` (paste that path into Explorer) and include its contents when you report it. |
+| **translator: NOT READY** | **Offline:** Ollama is not running or the model is not downloaded. Run `ollama pull gemma4:e2b`, or start the Ollama app. **Online:** check your API key and internet connection. |
+| A page takes several minutes | The model does not fit in VRAM. Run `ollama ps` in Command Prompt: the PROCESSOR column should say `100% GPU`. Close other apps using the GPU, or use an online translator. |
+| Not sure what is wrong | Run the **self-test**: open Command Prompt and run `"%LOCALAPPDATA%\Programs\MangaTL\MangaTL.exe" --selftest`. It checks the six things that must work and marks any that fail. |
+| A balloon is still in the original language | Check its status in the **Lines** tab. `skipped_sfx` is a sound effect left alone on purpose. `failed_fit` means the translation did not fit; type a shorter one in the right-hand panel. |
+| A character's name changes from page to page | Add the name to the **Series** sheet or the **Glossary**. |
 
 ---
 
-## Update dan uninstall
+## Updating and uninstalling
 
-- **Update:** download installer versi baru dan jalankan. Versi lama akan langsung diganti.
-- **Uninstall:** buka **Settings Windows → Apps → MangaTL → Uninstall**.
-- Pengaturan, API key, catatan series, dan proyek Anda **tidak ikut terhapus** saat uninstall atau update. Semuanya ada di `%LOCALAPPDATA%\MangaTL`. Hapus folder itu kalau ingin benar-benar bersih.
-
----
-
-## Melaporkan bug
-
-1. Saat hasil terjemahan salah, pilih balonnya, lalu klik tombol **Report** di aplikasi dan tulis apa yang salah.
-2. Aplikasi menyimpan laporannya di `%LOCALAPPDATA%\MangaTL\reports\`.
-3. Buat laporan di halaman **[Issues](https://github.com/Kanee18/Manga-tl/issues)**, lalu lampirkan folder laporan tersebut (di-zip) beserta penjelasan singkat.
+- **Update:** download the new installer and run it. It replaces the old version in place.
+- **Uninstall:** open **Windows Settings → Apps → MangaTL → Uninstall**.
+- Your settings, API keys, series notes and projects are **kept** when you uninstall or update. They live in `%LOCALAPPDATA%\MangaTL`; delete that folder for a completely clean slate.
 
 ---
 
-## Lisensi
+## Reporting a bug
 
-MangaTL adalah **freeware**: gratis untuk dipakai, tetapi **bukan open source**. Kode sumbernya tidak dipublikasikan.
-
-- ✅ Boleh dipakai gratis untuk keperluan pribadi.
-- ❌ Tidak boleh dijual, dimodifikasi, di-reverse engineer, atau disebarkan ulang tanpa izin. Bagikan link ke halaman ini, bukan file installer-nya.
-
-Ketentuan lengkap ada di [LICENSE](LICENSE).
-
-**Tentang konten:** MangaTL hanya menerjemahkan file yang sudah Anda miliki. Aplikasi ini tidak mendownload komik dari mana pun. Hak untuk menerjemahkan dan menyebarkan suatu komik adalah tanggung jawab penggunanya.
+1. When a translation comes out wrong, select the balloon, click **Report** in the app, and describe what is wrong.
+2. The app saves the report in `%LOCALAPPDATA%\MangaTL\reports\`.
+3. Open a report on the **[Issues](https://github.com/Kanee18/Manga-tl/issues)** page and attach that report folder (zipped) with a short description.
 
 ---
 
-## Kredit
+## License
 
-MangaTL dibuat oleh **[Kanee18](https://github.com/Kanee18)**, dengan memakai karya hebat dari banyak pihak:
+MangaTL is **freeware**: free to use, but **not open source**. Its source code is not published.
 
-| Bagian | Karya |
+- ✅ Free to use for personal purposes.
+- ❌ Not to be sold, modified, reverse engineered or redistributed without permission. Share a link to this page, not the installer itself.
+
+The full terms are in [LICENSE](LICENSE).
+
+**About content:** MangaTL only translates files you already have. It does not download comics from anywhere. Whether you have the right to translate and share a given comic is up to you.
+
+---
+
+## Credits
+
+MangaTL is made by **[Kanee18](https://github.com/Kanee18)**, on top of great work by many others:
+
+| Part | Work |
 |---|---|
-| Deteksi teks dan balon | [ogkalu/comic-text-and-bubble-detector](https://huggingface.co/ogkalu/comic-text-and-bubble-detector) |
-| Masker huruf dan baris | [dmMaze/comic-text-detector](https://github.com/dmMaze/comic-text-detector) |
-| OCR (pembaca teks komik) | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr) |
-| Penghapus teks (inpainting) | [LaMa](https://github.com/advimman/lama), via [mayocream/lama-manga-onnx](https://huggingface.co/mayocream/lama-manga-onnx) dan [Carve/LaMa-ONNX](https://huggingface.co/Carve/LaMa-ONNX) |
-| Model penerjemah offline | Gemma (`gemma4:e2b`) oleh Google, dijalankan lewat [Ollama](https://ollama.com) |
-| Font | Anime Ace 2 oleh [Blambot](https://blambot.com), [Comic Neue](https://comicneue.com) |
-| Antarmuka | [Qt](https://www.qt.io) dan [PyQt6](https://www.riverbankcomputing.com/software/pyqt/) |
-| Mesin AI dan gambar | [ONNX Runtime](https://onnxruntime.ai), [OpenCV](https://opencv.org), [Skia](https://skia.org) via skia-python, [NumPy](https://numpy.org) |
-| GPU | NVIDIA CUDA dan cuDNN |
+| Text and balloon detection | [ogkalu/comic-text-and-bubble-detector](https://huggingface.co/ogkalu/comic-text-and-bubble-detector) |
+| Glyph mask and text lines | [dmMaze/comic-text-detector](https://github.com/dmMaze/comic-text-detector) |
+| OCR (comic lettering reader) | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr) |
+| Text removal (inpainting) | [LaMa](https://github.com/advimman/lama), via [mayocream/lama-manga-onnx](https://huggingface.co/mayocream/lama-manga-onnx) and [Carve/LaMa-ONNX](https://huggingface.co/Carve/LaMa-ONNX) |
+| Offline translation model | Gemma (`gemma4:e2b`) by Google, run through [Ollama](https://ollama.com) |
+| Fonts | Anime Ace 2 by [Blambot](https://blambot.com), [Comic Neue](https://comicneue.com) |
+| Interface | [Qt](https://www.qt.io) and [PyQt6](https://www.riverbankcomputing.com/software/pyqt/) |
+| AI and imaging | [ONNX Runtime](https://onnxruntime.ai), [OpenCV](https://opencv.org), [Skia](https://skia.org) via skia-python, [NumPy](https://numpy.org) |
+| GPU | NVIDIA CUDA and cuDNN |
 | Installer | [Inno Setup](https://jrsoftware.org/isinfo.php) |
 
-Daftar lengkap beserta lisensi masing-masing ada di [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+The full list, with each one's license, is in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 
-Terima kasih kepada semua pembuat model dan pustaka di atas. Tanpa karya mereka, MangaTL tidak akan ada. 🙏
+Thank you to everyone who made the models and libraries above. Without their work, MangaTL would not exist. 🙏
